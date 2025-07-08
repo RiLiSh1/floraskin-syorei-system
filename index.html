@@ -1,0 +1,231 @@
+  <!DOCTYPE html>
+  <html lang="ja">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>floraskin-syorei-system</title>
+      <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+
+          body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial,
+  sans-serif;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #333;
+          }
+
+          .welcome-container {
+              background-color: white;
+              padding: 50px;
+              border-radius: 20px;
+              box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+              text-align: center;
+              max-width: 600px;
+              width: 90%;
+          }
+
+          .logo {
+              font-size: 48px;
+              color: #673ab7;
+              margin-bottom: 20px;
+              font-weight: bold;
+          }
+
+          h1 {
+              font-size: 28px;
+              margin-bottom: 15px;
+              color: #333;
+          }
+
+          .subtitle {
+              font-size: 16px;
+              color: #666;
+              margin-bottom: 40px;
+              line-height: 1.6;
+          }
+
+          .buttons {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              max-width: 600px;
+              margin: 0 auto;
+          }
+
+          .button {
+              padding: 20px 30px;
+              border-radius: 15px;
+              text-decoration: none;
+              font-weight: bold;
+              transition: all 0.3s;
+              display: block;
+              text-align: center;
+              font-size: 16px;
+          }
+
+          .button-primary {
+              background-color: #673ab7;
+              color: white;
+          }
+
+          .button-primary:hover {
+              background-color: #5e35b1;
+              transform: translateY(-2px);
+              box-shadow: 0 5px 15px rgba(103, 58, 183, 0.3);
+          }
+
+          .button-secondary {
+              background-color: white;
+              color: #673ab7;
+              border: 2px solid #673ab7;
+          }
+
+          .button-secondary:hover {
+              background-color: #673ab7;
+              color: white;
+              transform: translateY(-2px);
+          }
+
+          .button-tertiary {
+              background-color: white;
+              color: #ff9800;
+              border: 2px solid #ff9800;
+          }
+
+          .button-tertiary:hover {
+              background-color: #ff9800;
+              color: white;
+              transform: translateY(-2px);
+              box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+          }
+
+          .button-quaternary {
+              background-color: #ff9800;
+              color: white;
+          }
+
+          .button-quaternary:hover {
+              background-color: #f57c00;
+              transform: translateY(-2px);
+              box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+          }
+
+          .button-green {
+              background-color: #4caf50;
+              color: white;
+          }
+
+          .button-green:hover {
+              background-color: #45a049;
+              transform: translateY(-2px);
+              box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+          }
+
+          .demo-note {
+              margin-top: 30px;
+              padding: 15px;
+              background-color: #fff3cd;
+              border-radius: 10px;
+              font-size: 14px;
+              color: #856404;
+          }
+
+          .header {
+              position: fixed;
+              top: 0;
+              right: 0;
+              background-color: rgba(255,255,255,0.9);
+              padding: 15px 20px;
+              border-radius: 0 0 0 10px;
+              backdrop-filter: blur(10px);
+              z-index: 1000;
+              display: flex;
+              align-items: center;
+              gap: 15px;
+          }
+
+          .user-info {
+              font-size: 14px;
+              color: #666;
+          }
+
+          .logout-btn {
+              background-color: #f44336;
+              color: white;
+              border: none;
+              padding: 8px 16px;
+              border-radius: 5px;
+              cursor: pointer;
+              font-size: 12px;
+              transition: background-color 0.3s;
+          }
+
+          .logout-btn:hover {
+              background-color: #d32f2f;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="header">
+          <div class="user-info" id="userInfo"></div>
+          <button class="logout-btn" onclick="logout()">ログアウト</button>
+      </div>
+
+      <div class="welcome-container">
+          <div class="logo">floraskin-syorei-system</div>
+          <h1>症例管理システム</h1>
+          <p class="subtitle">
+              スタッフ間で症例を共有し、技術力の向上と<br>
+              お客様満足度の向上を目指しましょう
+          </p>
+
+          <div class="buttons">
+              <a href="save.html" class="button button-tertiary">症例を保存する</a>
+              <a href="update.html" class="button button-quaternary">お客様を探す</a>
+              <a href="form.html" class="button button-secondary">症例報告をする</a>
+              <a href="cases.html" class="button button-primary">症例報告を見る</a>
+              <a href="public.html" class="button button-green">お客様に提示</a>
+              <div></div>
+          </div>
+
+          <div class="demo-note">
+              <strong>システム情報：</strong><br>
+              このシステムはFirebase Storageにデータを保存します。<br>
+              本番環境での安全な運用が可能です。
+          </div>
+      </div>
+
+      <script>
+          window.onload = function() {
+              checkAuthentication();
+          };
+
+          function checkAuthentication() {
+              const loginInfo = localStorage.getItem('floraskinLogin');
+              if (!loginInfo) {
+                  window.location.href = 'login.html';
+                  return;
+              }
+
+              const login = JSON.parse(loginInfo);
+              document.getElementById('userInfo').textContent = `${login.store} 
+  (${login.userId})`;
+          }
+
+          function logout() {
+              if (confirm('ログアウトしますか？')) {
+                  localStorage.removeItem('floraskinLogin');
+                  window.location.href = 'login.html';
+              }
+          }
+      </script>
+  </body>
+  </html>
