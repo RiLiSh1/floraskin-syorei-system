@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>florasKIN 症例編集</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-header {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+        
+        .form-header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .customer-info {
+            background-color: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .form-body {
+            background-color: white;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff9800;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .required {
+            color: #d32f2f;
+            margin-left: 4px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #ff9800;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover {
+            background-color: #eeeeee;
+            border-color: #ff9800;
+        }
+        
+        .image-group {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            position: relative;
+        }
+        
+        .remove-session-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .remove-session-btn:hover {
+            background-color: #d32f2f;
+        }
+        
+        .add-session-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .add-session-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .image-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .image-angle-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #fafbfc;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .submit-button {
+            background-color: #ff9800;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto 0;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-button:hover {
+            background-color: #f57c00;
+        }
+        
+        .info-box {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        .preview-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            background-color: #ffebee;
+            color: #d32f2f;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        
+        .checkbox-label input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+        
+        .checkbox-text {
+            color: #555;
+            font-size: 16px;
+        }
+        
+        .checkbox-label:hover .checkbox-text {
+            color: #ff9800;
+        }
+        
+        /* タブレット */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .form-header {
+                padding: 25px;
+            }
+            
+            .form-body {
+                padding: 25px;
+            }
+        }
+        
+        /* スマホ (横向き) */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .form-header {
+                padding: 22px;
+            }
+            
+            .form-body {
+                padding: 22px;
+            }
+            
+            .image-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .back-link {
+                position: static;
+                display: inline-block;
+                margin-bottom: 15px;
+            }
+        }
+        
+        /* スマホ (縦向き) */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-header {
+                padding: 20px;
+            }
+            
+            .form-header h1 {
+                font-size: 20px;
+            }
+            
+            .form-header p {
+                font-size: 13px;
+            }
+            
+            .form-body {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 16px;
+            }
+            
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select,
+            textarea {
+                font-size: 16px;
+                padding: 12px 15px;
+            }
+            
+            .submit-button {
+                padding: 12px 30px;
+                font-size: 15px;
+            }
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: rgba(255,255,255,0.9);
+            padding: 15px 20px;
+            border-radius: 0 0 0 10px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="user-info" id="userInfo"></div>
+        <button class="logout-btn" onclick="logout()">ログアウト</button>
+    </div>
+    
+    <div class="container">
+        <div id="loadingSection" class="loading">
+            症例データを読み込み中...
+        </div>
+        
+        <div id="errorSection" class="error" style="display: none;">
+            <!-- エラーメッセージがここに表示されます -->
+        </div>
+        
+        <form id="editForm" style="display: none;">
+            <div class="form-header">
+                <a href="update.html" class="back-link">← 検索に戻る</a>
+                <h1>症例編集</h1>
+                <p>既存の症例情報を更新できます</p>
+                <div class="customer-info">
+                    <strong>顧客番号:</strong> <span id="displayCustomerNumber"></span> |
+                    <strong>担当者:</strong> <span id="displayStaffName"></span> |
+                    <strong>店舗:</strong> <span id="displayStore"></span>
+                </div>
+            </div>
+            
+            <div class="form-body">
+                <div class="form-section">
+                    <h2 class="section-title">基本情報</h2>
+                    
+                    <div class="form-group">
+                        <label>症例区分</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="normalCase" name="normalCase" value="true">
+                                <span class="checkbox-text">通常症例</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="adverseReaction" name="adverseReaction" value="true">
+                                <span class="checkbox-text">好転反応</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="complaint" name="complaint" value="true">
+                                <span class="checkbox-text">クレーム</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerNumber">顧客番号<span class="required">*</span></label>
+                        <input type="text" id="customerNumber" name="customerNumber" required readonly style="background-color: #f5f5f5;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="store">店舗<span class="required">*</span></label>
+                        <select id="store" name="store" required>
+                            <option value="">選択してください</option>
+                            <option value="銀座Miel店">florasKIN 銀座Miel店</option>
+                            <option value="銀座Blanc店">florasKIN 銀座Blanc店</option>
+                            <option value="上野店">florasKIN 上野店</option>
+                            <option value="恵比寿店">florasKIN 恵比寿店</option>
+                            <option value="心斎橋店">florasKIN 心斎橋店</option>
+                            <option value="難波店">florasKIN 難波店</option>
+                            <option value="梅田店">florasKIN 梅田店</option>
+                            <option value="三宮店">florasKIN 三宮店</option>
+                            <option value="横浜店">florasKIN 横浜店</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="staffName">担当者名<span class="required">*</span></label>
+                        <input type="text" id="staffName" name="staffName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birthDate">お客様の生年月日<span class="required">*</span></label>
+                        <input type="date" id="birthDate" name="birthDate" required onchange="calculateAgeGroup()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ageGroup">年齢層（自動計算）</label>
+                        <input type="text" id="ageGroup" name="ageGroup" readonly style="background-color: #f5f5f5;" placeholder="生年月日を入力すると自動計算されます">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="concern">主な悩み<span class="required">*</span></label>
+                        <input type="text" id="concern" name="concern" required>
+                    </div>
+                    
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">施術情報</h2>
+                    
+                    <div class="form-group">
+                        <label for="menu">選択したメニュー<span class="required">*</span></label>
+                        <select id="menu" name="menu" required>
+                            <option value="">選択してください</option>
+                            <option value="フローラ毛穴洗浄">フローラ毛穴洗浄</option>
+                            <option value="フローラ肌質改善">フローラ肌質改善</option>
+                            <option value="フローラワックス">フローラワックス</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="solution">使用溶剤</label>
+                        <select id="solution" name="solution">
+                            <option value="">選択してください</option>
+                            <option value="メラショット">メラショット</option>
+                            <option value="アドバンスト">アドバンスト</option>
+                            <option value="モーメント">モーメント</option>
+                            <option value="その他">その他</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sessionCount">施術の回数<span class="required">*</span></label>
+                        <input type="number" id="sessionCount" name="sessionCount" min="1" required readonly style="background-color: #f5f5f5;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="frequency">頻度<span class="required">*</span></label>
+                        <input type="text" id="frequency" name="frequency" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="period">期間<span class="required">*</span></label>
+                        <input type="text" id="period" name="period" required>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">詳細情報</h2>
+                    
+                    <div class="form-group">
+                        <label for="treatmentNotes">施術において注意や意識したこと<span class="required">*</span></label>
+                        <textarea id="treatmentNotes" name="treatmentNotes" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lifestyle">お客様の生活習慣・自宅ケア<span class="required">*</span></label>
+                        <textarea id="lifestyle" name="lifestyle" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="progress">結果が出るまでの経過<span class="required">*</span></label>
+                        <textarea id="progress" name="progress" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="innovations">総括して工夫した点<span class="required">*</span></label>
+                        <textarea id="innovations" name="innovations" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="futureCare">今後のケア提案<span class="required">*</span></label>
+                        <textarea id="futureCare" name="futureCare" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="additionalNotes">備考</label>
+                        <textarea id="additionalNotes" name="additionalNotes" placeholder="その他、特記事項があれば記入してください（任意）"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">利用許可</h2>
+                    
+                    <div class="form-group">
+                        <label for="secondaryUse">二次利用可否<span class="required">*</span></label>
+                        <select id="secondaryUse" name="secondaryUse" required onchange="toggleSecondaryUseNote()">
+                            <option value="">選択してください</option>
+                            <option value="全顔OK">全顔OK（HP掲載・広告利用等での使用を許可）</option>
+                            <option value="目元モザイクあればOK">目元モザイクあればOK（目元処理後の使用を許可）</option>
+                            <option value="店舗内のみOK">店舗内のみOK（店舗でのご案内・相談時のみ使用可能）</option>
+                            <option value="掲載NG">掲載NG（社内での症例共有・学習目的のみ）</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="secondaryUseNoteGroup" style="display: none;">
+                        <label for="secondaryUseNote">二次利用に関する特記事項</label>
+                        <textarea id="secondaryUseNote" name="secondaryUseNote"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Before / After 画像</h2>
+                    
+                    <div class="info-box">
+                        <strong>画像の追加・更新について</strong><br>
+                        ・既存の画像は保持されます<br>
+                        ・新しい施術回を追加できます<br>
+                        ・既存の施術回の画像を更新できます
+                    </div>
+                    
+                    <div id="imageSections">
+                        <!-- 既存の画像セクションがここに動的に挿入されます -->
+                    </div>
+                    
+                    <button type="button" class="add-session-btn" onclick="addImageSection()">
+                        施術回を追加
+                    </button>
+                </div>
+                
+                <button type="submit" class="submit-button">更新</button>
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        let imageSessionCount = 0;
+        let originalData = null;
+        let editingCaseId = null;
+        
+        // URLパラメータから症例IDを取得
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                id: params.get('id'),
+                customerNumber: params.get('customerNumber')
+            };
+        }
+        
+        // ページ読み込み時の処理
+        window.onload = function() {
+            const params = getUrlParams();
+            if (params.id) {
+                loadCaseData(params.id);
+            } else {
+                showError('症例IDが指定されていません。');
+            }
+        };
+        
+        // 年齢層計算関数
+        function calculateAgeGroup() {
+            const birthDateInput = document.getElementById('birthDate');
+            const ageGroupInput = document.getElementById('ageGroup');
+            
+            if (!birthDateInput.value) {
+                ageGroupInput.value = '';
+                return;
+            }
+            
+            const birthDate = new Date(birthDateInput.value);
+            const today = new Date();
+            
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            let ageGroup = '';
+            if (age < 20) {
+                ageGroup = '10代';
+            } else if (age < 30) {
+                ageGroup = '20代';
+            } else if (age < 40) {
+                ageGroup = '30代';
+            } else if (age < 50) {
+                ageGroup = '40代';
+            } else if (age < 60) {
+                ageGroup = '50代';
+            } else {
+                ageGroup = '60代以上';
+            }
+            
+            ageGroupInput.value = ageGroup;
+        }
+        
+        // 症例データの読み込み
+        function loadCaseData(caseId) {
+            const casesData = localStorage.getItem('floraskinCases');
+            const allCases = casesData ? JSON.parse(casesData) : [];
+            
+            const caseData = allCases.find(c => c.id === caseId);
+            
+            if (caseData) {
+                originalData = { ...caseData };
+                editingCaseId = caseId;
+                populateForm(caseData);
+                hideLoading();
+                showForm();
+            } else {
+                showError('指定された症例が見つかりませんでした。');
+            }
+        }
+        
+        // フォームにデータを設定
+        function populateForm(data) {
+            // 基本情報
+            document.getElementById('normalCase').checked = data.normalCase || false;
+            document.getElementById('adverseReaction').checked = data.adverseReaction || false;
+            document.getElementById('complaint').checked = data.complaint || false;
+            document.getElementById('customerNumber').value = data.customerNumber || '';
+            document.getElementById('store').value = data.store || '';
+            document.getElementById('staffName').value = data.staffName || '';
+            document.getElementById('birthDate').value = data.birthDate || '';
+            document.getElementById('ageGroup').value = data.ageGroup || '';
+            
+            // 生年月日が設定されている場合は年齢層を再計算
+            if (data.birthDate) {
+                calculateAgeGroup();
+            }
+            document.getElementById('concern').value = data.concern || '';
+            
+            // 施術情報
+            document.getElementById('menu').value = data.menu || data.course || '';
+            document.getElementById('solution').value = data.solution || '';
+            document.getElementById('sessionCount').value = data.sessionCount || '';
+            document.getElementById('frequency').value = data.frequency || '';
+            document.getElementById('period').value = data.period || '';
+            
+            // 詳細情報
+            document.getElementById('treatmentNotes').value = data.treatmentNotes || '';
+            document.getElementById('lifestyle').value = data.lifestyle || '';
+            document.getElementById('progress').value = data.progress || '';
+            document.getElementById('innovations').value = data.innovations || '';
+            document.getElementById('futureCare').value = data.futureCare || '';
+            document.getElementById('additionalNotes').value = data.additionalNotes || '';
+            
+            // 利用許可
+            document.getElementById('secondaryUse').value = data.secondaryUse || '';
+            document.getElementById('secondaryUseNote').value = data.secondaryUseNote || '';
+            
+            // ヘッダー情報
+            document.getElementById('displayCustomerNumber').textContent = data.customerNumber || '';
+            document.getElementById('displayStaffName').textContent = data.staffName || '';
+            document.getElementById('displayStore').textContent = data.store || '';
+            
+            // 条件分岐の処理
+            toggleSecondaryUseNote();
+            
+            // 画像セクションの構築
+            buildImageSections(data.images || []);
+        }
+        
+        // 画像セクションの構築
+        function buildImageSections(images) {
+            const imageSections = document.getElementById('imageSections');
+            imageSections.innerHTML = '';
+            
+            imageSessionCount = Math.max(images.length, 1);
+            
+            for (let i = 1; i <= imageSessionCount; i++) {
+                const imageData = images.find(img => img.session === i) || {};
+                addImageSectionWithData(i, imageData);
+            }
+        }
+        
+        // データ付きで画像セクションを追加
+        function addImageSectionWithData(sessionNumber, imageData = {}) {
+            const imageSections = document.getElementById('imageSections');
+            
+            const newSection = document.createElement('div');
+            newSection.id = `imageSection${sessionNumber}`;
+            newSection.className = 'image-group';
+            
+            newSection.innerHTML = `
+                ${sessionNumber > 1 ? '<button type="button" class="remove-session-btn" onclick="removeImageSection(' + sessionNumber + ')">&times;</button>' : ''}
+                <h3>${sessionNumber}回目</h3>
+                <div class="session-info">
+                    <div class="form-group">
+                        <label for="sessionDate${sessionNumber}">施術日</label>
+                        <input type="date" id="sessionDate${sessionNumber}" name="sessionDate${sessionNumber}" value="${imageData.date || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionMenu${sessionNumber}">選択したメニュー</label>
+                        <select id="sessionMenu${sessionNumber}" name="sessionMenu${sessionNumber}">
+                            <option value="">選択してください</option>
+                            <option value="フローラ毛穴洗浄" ${imageData.menu === 'フローラ毛穴洗浄' ? 'selected' : ''}>フローラ毛穴洗浄</option>
+                            <option value="フローラ肌質改善" ${imageData.menu === 'フローラ肌質改善' || imageData.menu === 'フローラ肌質改善（メラショット）' || imageData.menu === 'フローラ肌質改善（アドバンスト）' || imageData.menu === 'フローラ肌質改善（モーメント）' ? 'selected' : ''}>フローラ肌質改善</option>
+                            <option value="フローラワックス" ${imageData.menu === 'フローラワックス' || imageData.menu === 'フローラフェイシャルワックス' ? 'selected' : ''}>フローラワックス</option>
+                            <option value="その他" ${imageData.menu === 'その他' || imageData.menu === 'W施術（毛穴洗浄＋肌質改善）' ? 'selected' : ''}>その他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionSolution${sessionNumber}">使用溶剤</label>
+                        <select id="sessionSolution${sessionNumber}" name="sessionSolution${sessionNumber}">
+                            <option value="">選択してください</option>
+                            <option value="メラショット" ${imageData.solution === 'メラショット' ? 'selected' : ''}>メラショット</option>
+                            <option value="アドバンスト" ${imageData.solution === 'アドバンスト' ? 'selected' : ''}>アドバンスト</option>
+                            <option value="モーメント" ${imageData.solution === 'モーメント' ? 'selected' : ''}>モーメント</option>
+                            <option value="その他" ${imageData.solution === 'その他' ? 'selected' : ''}>その他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionNotes${sessionNumber}">施術メモ</label>
+                        <textarea id="sessionNotes${sessionNumber}" name="sessionNotes${sessionNumber}" placeholder="施術時の特記事項があれば記入してください（任意）">${imageData.notes || ''}</textarea>
+                    </div>
+                </div>
+                
+                <!-- 4段構成の画像セクション -->
+                <div class="image-angle-section">
+                    <h4 style="color: #ff9800; margin-bottom: 15px; font-size: 16px; font-weight: bold;">🎯 正面画像</h4>
+                    <div class="image-row">
+                        <div class="form-group">
+                            <label for="frontBeforeImage${sessionNumber}">Before画像（正面）</label>
+                            <div class="file-upload">
+                                <input type="file" id="frontBeforeImage${sessionNumber}" name="frontBeforeImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'frontBeforeImage${sessionNumber}Preview')">
+                                <label for="frontBeforeImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.frontBefore || imageData.before ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.frontBefore || imageData.before ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="frontBeforeImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                        <div class="form-group">
+                            <label for="frontAfterImage${sessionNumber}">After画像（正面）</label>
+                            <div class="file-upload">
+                                <input type="file" id="frontAfterImage${sessionNumber}" name="frontAfterImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'frontAfterImage${sessionNumber}Preview')">
+                                <label for="frontAfterImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.frontAfter || imageData.after ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.frontAfter || imageData.after ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="frontAfterImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-angle-section">
+                    <h4 style="color: #ff9800; margin-bottom: 15px; font-size: 16px; font-weight: bold;">📐 右側画像（任意）</h4>
+                    <div class="image-row">
+                        <div class="form-group">
+                            <label for="rightBeforeImage${sessionNumber}">Before画像（右側）</label>
+                            <div class="file-upload">
+                                <input type="file" id="rightBeforeImage${sessionNumber}" name="rightBeforeImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'rightBeforeImage${sessionNumber}Preview')">
+                                <label for="rightBeforeImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.rightBefore ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.rightBefore ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="rightBeforeImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                        <div class="form-group">
+                            <label for="rightAfterImage${sessionNumber}">After画像（右側）</label>
+                            <div class="file-upload">
+                                <input type="file" id="rightAfterImage${sessionNumber}" name="rightAfterImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'rightAfterImage${sessionNumber}Preview')">
+                                <label for="rightAfterImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.rightAfter ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.rightAfter ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="rightAfterImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-angle-section">
+                    <h4 style="color: #ff9800; margin-bottom: 15px; font-size: 16px; font-weight: bold;">📐 左側画像（任意）</h4>
+                    <div class="image-row">
+                        <div class="form-group">
+                            <label for="leftBeforeImage${sessionNumber}">Before画像（左側）</label>
+                            <div class="file-upload">
+                                <input type="file" id="leftBeforeImage${sessionNumber}" name="leftBeforeImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'leftBeforeImage${sessionNumber}Preview')">
+                                <label for="leftBeforeImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.leftBefore ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.leftBefore ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="leftBeforeImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                        <div class="form-group">
+                            <label for="leftAfterImage${sessionNumber}">After画像（左側）</label>
+                            <div class="file-upload">
+                                <input type="file" id="leftAfterImage${sessionNumber}" name="leftAfterImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'leftAfterImage${sessionNumber}Preview')">
+                                <label for="leftAfterImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.leftAfter ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.leftAfter ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="leftAfterImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="image-angle-section">
+                    <h4 style="color: #ff9800; margin-bottom: 15px; font-size: 16px; font-weight: bold;">📷 その他の画像（任意）</h4>
+                    <div class="image-row">
+                        <div class="form-group">
+                            <label for="otherBeforeImage${sessionNumber}">Before画像（その他）</label>
+                            <div class="file-upload">
+                                <input type="file" id="otherBeforeImage${sessionNumber}" name="otherBeforeImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'otherBeforeImage${sessionNumber}Preview')">
+                                <label for="otherBeforeImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.otherBefore ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.otherBefore ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="otherBeforeImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                        <div class="form-group">
+                            <label for="otherAfterImage${sessionNumber}">After画像（その他）</label>
+                            <div class="file-upload">
+                                <input type="file" id="otherAfterImage${sessionNumber}" name="otherAfterImage${sessionNumber}" accept="image/*" onchange="previewImage(this, 'otherAfterImage${sessionNumber}Preview')">
+                                <label for="otherAfterImage${sessionNumber}" class="file-upload-label">
+                                    ${imageData.otherAfter ? '画像を変更' : '画像を選択'}
+                                </label>
+                            </div>
+                            ${imageData.otherAfter ? '<div style="margin-top: 10px; color: #4caf50; font-size: 14px;">✓ 既存の画像があります</div>' : ''}
+                            <img id="otherAfterImage${sessionNumber}Preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            imageSections.appendChild(newSection);
+        }
+        
+        // 新しい画像セクションを追加
+        function addImageSection() {
+            imageSessionCount++;
+            addImageSectionWithData(imageSessionCount);
+            updateSessionCount();
+        }
+        
+        // 画像セクションを削除
+        function removeImageSection(sessionId) {
+            const section = document.getElementById(`imageSection${sessionId}`);
+            if (section) {
+                section.remove();
+                renumberSections();
+                updateSessionCount();
+            }
+        }
+        
+        // セクションの番号を振り直し
+        function renumberSections() {
+            const sections = document.querySelectorAll('.image-group');
+            sections.forEach((section, index) => {
+                const sessionNumber = index + 1;
+                section.id = `imageSection${sessionNumber}`;
+                
+                const title = section.querySelector('h3');
+                title.textContent = `${sessionNumber}回目`;
+                
+                // 基本情報の更新
+                const sessionDateInput = section.querySelector('input[type="date"]');
+                const sessionDateLabel = section.querySelector('label[for^="sessionDate"]');
+                const sessionMenuSelect = section.querySelector('select[id^="sessionMenu"]');
+                const sessionMenuLabel = section.querySelector('label[for^="sessionMenu"]');
+                const sessionSolutionSelect = section.querySelector('select[id^="sessionSolution"]');
+                const sessionSolutionLabel = section.querySelector('label[for^="sessionSolution"]');
+                const sessionNotesTextarea = section.querySelector('textarea[id^="sessionNotes"]');
+                const sessionNotesLabel = section.querySelector('label[for^="sessionNotes"]');
+                const removeBtn = section.querySelector('.remove-session-btn');
+                
+                if (sessionDateInput) {
+                    sessionDateInput.id = `sessionDate${sessionNumber}`;
+                    sessionDateInput.name = `sessionDate${sessionNumber}`;
+                }
+                if (sessionDateLabel) {
+                    sessionDateLabel.setAttribute('for', `sessionDate${sessionNumber}`);
+                }
+                if (sessionMenuSelect) {
+                    sessionMenuSelect.id = `sessionMenu${sessionNumber}`;
+                    sessionMenuSelect.name = `sessionMenu${sessionNumber}`;
+                }
+                if (sessionMenuLabel) {
+                    sessionMenuLabel.setAttribute('for', `sessionMenu${sessionNumber}`);
+                }
+                if (sessionSolutionSelect) {
+                    sessionSolutionSelect.id = `sessionSolution${sessionNumber}`;
+                    sessionSolutionSelect.name = `sessionSolution${sessionNumber}`;
+                }
+                if (sessionSolutionLabel) {
+                    sessionSolutionLabel.setAttribute('for', `sessionSolution${sessionNumber}`);
+                }
+                if (sessionNotesTextarea) {
+                    sessionNotesTextarea.id = `sessionNotes${sessionNumber}`;
+                    sessionNotesTextarea.name = `sessionNotes${sessionNumber}`;
+                }
+                if (sessionNotesLabel) {
+                    sessionNotesLabel.setAttribute('for', `sessionNotes${sessionNumber}`);
+                }
+                
+                // 4段構成の画像フィールドを更新
+                const imageTypes = ['frontBefore', 'frontAfter', 'rightBefore', 'rightAfter', 'leftBefore', 'leftAfter', 'otherBefore', 'otherAfter'];
+                imageTypes.forEach(imageType => {
+                    const imageInput = section.querySelector(`input[id^="${imageType}Image"]`);
+                    const imageLabel = section.querySelector(`label[for^="${imageType}Image"]`);
+                    const imagePreview = section.querySelector(`img[id^="${imageType}Image"][id$="Preview"]`);
+                    
+                    if (imageInput) {
+                        imageInput.id = `${imageType}Image${sessionNumber}`;
+                        imageInput.name = `${imageType}Image${sessionNumber}`;
+                        imageInput.setAttribute('onchange', `previewImage(this, '${imageType}Image${sessionNumber}Preview')`);
+                    }
+                    if (imageLabel) {
+                        imageLabel.setAttribute('for', `${imageType}Image${sessionNumber}`);
+                    }
+                    if (imagePreview) {
+                        imagePreview.id = `${imageType}Image${sessionNumber}Preview`;
+                    }
+                });
+                
+                if (removeBtn && sessionNumber > 1) {
+                    removeBtn.setAttribute('onclick', `removeImageSection(${sessionNumber})`);
+                } else if (removeBtn && sessionNumber === 1) {
+                    removeBtn.remove();
+                }
+            });
+            
+            imageSessionCount = sections.length;
+        }
+        
+        // セッション数を更新
+        function updateSessionCount() {
+            const sessionCountInput = document.getElementById('sessionCount');
+            sessionCountInput.value = imageSessionCount;
+        }
+        
+        // その他コースの表示切り替え
+        function toggleOtherCourse() {
+            const courseSelect = document.getElementById('course');
+            const otherCourseGroup = document.getElementById('otherCourseGroup');
+            const otherCourseInput = document.getElementById('otherCourse');
+            
+            if (courseSelect.value === 'その他') {
+                otherCourseGroup.style.display = 'block';
+                otherCourseInput.required = true;
+            } else {
+                otherCourseGroup.style.display = 'none';
+                otherCourseInput.required = false;
+            }
+        }
+        
+        // 二次利用特記事項の表示切り替え
+        function toggleSecondaryUseNote() {
+            const secondaryUseSelect = document.getElementById('secondaryUse');
+            const secondaryUseNoteGroup = document.getElementById('secondaryUseNoteGroup');
+            
+            if (secondaryUseSelect.value === '目元モザイクあればOK' || secondaryUseSelect.value === '店舗内のみOK') {
+                secondaryUseNoteGroup.style.display = 'block';
+            } else {
+                secondaryUseNoteGroup.style.display = 'none';
+            }
+        }
+        
+        // 画像プレビュー
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        // フォーム送信処理
+        document.getElementById('editForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // フォームデータの収集
+            const formData = new FormData(this);
+            const data = { ...originalData }; // 元のデータをベースにする
+            
+            // テキストデータの更新
+            for (let [key, value] of formData.entries()) {
+                if (!key.includes('before') && !key.includes('after') && !key.includes('sessionDate')) {
+                    data[key] = value;
+                }
+            }
+            
+            // チェックボックスの値を明示的に設定
+            data.normalCase = document.getElementById('normalCase').checked;
+            data.adverseReaction = document.getElementById('adverseReaction').checked;
+            data.complaint = document.getElementById('complaint').checked;
+            
+            // 画像データの処理
+            data.images = [...(originalData.images || [])]; // 既存の画像データを保持
+            
+            for (let i = 1; i <= imageSessionCount; i++) {
+                const sessionDateInput = document.getElementById(`sessionDate${i}`);
+                const sessionMenuSelect = document.getElementById(`sessionMenu${i}`);
+                const sessionSolutionSelect = document.getElementById(`sessionSolution${i}`);
+                const sessionNotesTextarea = document.getElementById(`sessionNotes${i}`);
+                
+                // 4段構成の画像フィールドを取得
+                const frontBeforeInput = document.getElementById(`frontBeforeImage${i}`);
+                const frontAfterInput = document.getElementById(`frontAfterImage${i}`);
+                const rightBeforeInput = document.getElementById(`rightBeforeImage${i}`);
+                const rightAfterInput = document.getElementById(`rightAfterImage${i}`);
+                const leftBeforeInput = document.getElementById(`leftBeforeImage${i}`);
+                const leftAfterInput = document.getElementById(`leftAfterImage${i}`);
+                const otherBeforeInput = document.getElementById(`otherBeforeImage${i}`);
+                const otherAfterInput = document.getElementById(`otherAfterImage${i}`);
+                
+                // セッション情報を取得
+                const sessionDate = sessionDateInput ? sessionDateInput.value : null;
+                const sessionMenu = sessionMenuSelect ? sessionMenuSelect.value : null;
+                const sessionSolution = sessionSolutionSelect ? sessionSolutionSelect.value : null;
+                const sessionNotes = sessionNotesTextarea ? sessionNotesTextarea.value : null;
+                
+                // 4段構成の画像ファイルを取得
+                const frontBeforeFile = frontBeforeInput ? frontBeforeInput.files[0] : null;
+                const frontAfterFile = frontAfterInput ? frontAfterInput.files[0] : null;
+                const rightBeforeFile = rightBeforeInput ? rightBeforeInput.files[0] : null;
+                const rightAfterFile = rightAfterInput ? rightAfterInput.files[0] : null;
+                const leftBeforeFile = leftBeforeInput ? leftBeforeInput.files[0] : null;
+                const leftAfterFile = leftAfterInput ? leftAfterInput.files[0] : null;
+                const otherBeforeFile = otherBeforeInput ? otherBeforeInput.files[0] : null;
+                const otherAfterFile = otherAfterInput ? otherAfterInput.files[0] : null;
+                
+                // 何かデータが入力されている場合のみ処理
+                if (sessionDate || sessionMenu || sessionSolution || sessionNotes || 
+                    frontBeforeFile || frontAfterFile || rightBeforeFile || rightAfterFile ||
+                    leftBeforeFile || leftAfterFile || otherBeforeFile || otherAfterFile) {
+                    
+                    // 既存の画像データを検索
+                    let existingImageData = data.images.find(img => img.session === i);
+                    
+                    if (!existingImageData) {
+                        // 新しいセッション
+                        data.images.push({
+                            session: i,
+                            date: sessionDate,
+                            menu: sessionMenu,
+                            solution: sessionSolution,
+                            notes: sessionNotes,
+                            // 4段構成の画像情報
+                            frontBefore: frontBeforeFile ? frontBeforeFile.name : null,
+                            frontAfter: frontAfterFile ? frontAfterFile.name : null,
+                            rightBefore: rightBeforeFile ? rightBeforeFile.name : null,
+                            rightAfter: rightAfterFile ? rightAfterFile.name : null,
+                            leftBefore: leftBeforeFile ? leftBeforeFile.name : null,
+                            leftAfter: leftAfterFile ? leftAfterFile.name : null,
+                            otherBefore: otherBeforeFile ? otherBeforeFile.name : null,
+                            otherAfter: otherAfterFile ? otherAfterFile.name : null,
+                            // 互換性のために旧フォーマットも保持
+                            before: frontBeforeFile ? frontBeforeFile.name : null,
+                            after: frontAfterFile ? frontAfterFile.name : null
+                        });
+                    } else {
+                        // 既存のセッションを更新
+                        if (sessionDate) existingImageData.date = sessionDate;
+                        if (sessionMenu) existingImageData.menu = sessionMenu;
+                        if (sessionSolution) existingImageData.solution = sessionSolution;
+                        if (sessionNotes) existingImageData.notes = sessionNotes;
+                        
+                        // 4段構成の画像情報を更新
+                        if (frontBeforeFile) {
+                            existingImageData.frontBefore = frontBeforeFile.name;
+                            existingImageData.before = frontBeforeFile.name; // 互換性
+                        }
+                        if (frontAfterFile) {
+                            existingImageData.frontAfter = frontAfterFile.name;
+                            existingImageData.after = frontAfterFile.name; // 互換性
+                        }
+                        if (rightBeforeFile) existingImageData.rightBefore = rightBeforeFile.name;
+                        if (rightAfterFile) existingImageData.rightAfter = rightAfterFile.name;
+                        if (leftBeforeFile) existingImageData.leftBefore = leftBeforeFile.name;
+                        if (leftAfterFile) existingImageData.leftAfter = leftAfterFile.name;
+                        if (otherBeforeFile) existingImageData.otherBefore = otherBeforeFile.name;
+                        if (otherAfterFile) existingImageData.otherAfter = otherAfterFile.name;
+                    }
+                }
+            }
+            
+            // sessionCountを更新
+            data.sessionCount = imageSessionCount;
+            
+            // 更新日時を設定
+            data.timestamp = new Date().toISOString();
+            
+            // LocalStorageのデータを更新
+            const casesData = localStorage.getItem('floraskinCases');
+            const allCases = casesData ? JSON.parse(casesData) : [];
+            
+            const caseIndex = allCases.findIndex(c => c.id === editingCaseId);
+            if (caseIndex !== -1) {
+                allCases[caseIndex] = data;
+                localStorage.setItem('floraskinCases', JSON.stringify(allCases));
+                
+                alert('症例を更新しました！');
+                window.location.href = 'cases.html';
+            } else {
+                alert('更新に失敗しました。');
+            }
+        });
+        
+        // UI制御関数
+        function hideLoading() {
+            document.getElementById('loadingSection').style.display = 'none';
+        }
+        
+        function showForm() {
+            document.getElementById('editForm').style.display = 'block';
+        }
+        
+        function showError(message) {
+            document.getElementById('loadingSection').style.display = 'none';
+            const errorSection = document.getElementById('errorSection');
+            errorSection.innerHTML = `
+                <h2>エラー</h2>
+                <p>${message}</p>
+                <a href="update.html" style="color: #673ab7; text-decoration: none; font-weight: bold;">← 検索画面に戻る</a>
+            `;
+            errorSection.style.display = 'block';
+        }
+        
+        // ページ読み込み時の認証チェック
+        function checkAuthentication() {
+            const loginInfo = localStorage.getItem('floraskinLogin');
+            if (!loginInfo) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const login = JSON.parse(loginInfo);
+            document.getElementById('userInfo').textContent = `${login.store} (${login.userId})`;
+        }
+        
+        function logout() {
+            if (confirm('ログアウトしますか？')) {
+                localStorage.removeItem('floraskinLogin');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // ページ読み込み時に認証チェック実行
+        checkAuthentication();
+    </script>
+</body>
+</html>

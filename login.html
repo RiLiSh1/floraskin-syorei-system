@@ -1,0 +1,184 @@
+ <!DOCTYPE html>
+  <html lang="ja">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>floraskin-syorei-system ログイン</title>
+      <style>
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+          }
+
+          body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial,
+  sans-serif;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+          }
+
+          .login-container {
+              background-color: white;
+              padding: 40px;
+              border-radius: 20px;
+              box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+              width: 100%;
+              max-width: 400px;
+          }
+
+          .logo {
+              text-align: center;
+              font-size: 32px;
+              color: #673ab7;
+              margin-bottom: 30px;
+              font-weight: bold;
+          }
+
+          .form-group {
+              margin-bottom: 20px;
+          }
+
+          label {
+              display: block;
+              margin-bottom: 8px;
+              color: #555;
+              font-weight: 500;
+          }
+
+          select, input {
+              width: 100%;
+              padding: 12px;
+              border: 2px solid #e0e0e0;
+              border-radius: 8px;
+              font-size: 16px;
+              transition: border-color 0.3s;
+          }
+
+          select:focus, input:focus {
+              outline: none;
+              border-color: #673ab7;
+          }
+
+          button {
+              width: 100%;
+              padding: 14px;
+              background-color: #673ab7;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-size: 16px;
+              font-weight: bold;
+              cursor: pointer;
+              transition: background-color 0.3s;
+          }
+
+          button:hover {
+              background-color: #5e35b1;
+          }
+
+          .error-message {
+              color: #d32f2f;
+              font-size: 14px;
+              margin-top: 10px;
+              text-align: center;
+              display: none;
+          }
+      </style>
+  </head>
+  <body>
+      <div class="login-container">
+          <div class="logo">floraskin-syorei-system</div>
+
+          <form id="loginForm">
+              <div class="form-group">
+                  <label for="store">店舗を選択</label>
+                  <select id="store" required>
+                      <option value="">選択してください</option>
+                      <option value="florasKIN 銀座Miel店">florasKIN 銀座Miel店</option>
+                      <option value="florasKIN 銀座Blanc店">florasKIN 銀座Blanc店</option>
+                      <option value="florasKIN 上野店">florasKIN 上野店</option>
+                      <option value="florasKIN 恵比寿店">florasKIN 恵比寿店</option>
+                      <option value="florasKIN 心斎橋店">florasKIN 心斎橋店</option>
+                      <option value="florasKIN 難波店">florasKIN 難波店</option>
+                      <option value="florasKIN 梅田店">florasKIN 梅田店</option>
+                      <option value="florasKIN 三宮店">florasKIN 三宮店</option>
+                      <option value="florasKIN 横浜店">florasKIN 横浜店</option>
+                  </select>
+              </div>
+
+              <div class="form-group">
+                  <label for="userId">ユーザーID</label>
+                  <input type="text" id="userId" required placeholder="ユーザーIDを入力">
+              </div>
+
+              <div class="form-group">
+                  <label for="password">パスワード</label>
+                  <input type="password" id="password" required 
+  placeholder="パスワードを入力">
+              </div>
+
+              <button type="submit">ログイン</button>
+
+              <div id="errorMessage" class="error-message"></div>
+          </form>
+      </div>
+
+      <script>
+          // 初期アカウント設定
+          const accounts = [
+              { store: 'florasKIN 銀座Miel店', userId: 'ginza-miel', password: 'flora2024',
+  role: 'user' },
+              { store: 'florasKIN 銀座Blanc店', userId: 'ginza-blanc', password:
+  'flora2024', role: 'user' },
+              { store: 'florasKIN 上野店', userId: 'ueno', password: 'flora2024', role:
+  'user' },
+              { store: 'florasKIN 恵比寿店', userId: 'ebisu', password: 'flora2024', role:
+  'user' },
+              { store: 'florasKIN 心斎橋店', userId: 'shinsaibashi', password: 'flora2024',
+  role: 'user' },
+              { store: 'florasKIN 難波店', userId: 'namba', password: 'flora2024', role:
+  'user' },
+              { store: 'florasKIN 梅田店', userId: 'umeda', password: 'flora2024', role:
+  'user' },
+              { store: 'florasKIN 三宮店', userId: 'sannomiya', password: 'flora2024', role:
+   'user' },
+              { store: 'florasKIN 横浜店', userId: 'yokohama', password: 'flora2024', role:
+  'user' },
+              { store: '管理者', userId: 'admin', password: 'admin2024', role: 'admin' }
+          ];
+
+          document.getElementById('loginForm').addEventListener('submit', function(e) {
+              e.preventDefault();
+
+              const store = document.getElementById('store').value;
+              const userId = document.getElementById('userId').value;
+              const password = document.getElementById('password').value;
+              const errorMessage = document.getElementById('errorMessage');
+
+              const account = accounts.find(acc =>
+                  (acc.store === store || (userId === 'admin' && acc.userId === 'admin')) &&
+
+                  acc.userId === userId &&
+                  acc.password === password
+              );
+
+              if (account) {
+                  localStorage.setItem('floraskinLogin', JSON.stringify({
+                      store: account.store,
+                      userId: account.userId,
+                      role: account.role,
+                      timestamp: new Date().getTime()
+                  }));
+                  window.location.href = 'index.html';
+              } else {
+                  errorMessage.textContent = 'ログイン情報が正しくありません';
+                  errorMessage.style.display = 'block';
+              }
+          });
+      </script>
+  </body>
+  </html>

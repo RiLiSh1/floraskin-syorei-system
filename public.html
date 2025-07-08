@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>florasKIN 施術事例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #673ab7 0%, #9c27b0 100%);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .intro-section {
+            text-align: center;
+            margin-bottom: 50px;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        .intro-section h2 {
+            font-size: 24px;
+            color: #673ab7;
+            margin-bottom: 20px;
+        }
+        
+        .intro-section p {
+            font-size: 16px;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .case-card {
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .case-images {
+            position: relative;
+            height: 250px;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .case-images img {
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-label {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6));
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 0 0 10px 0;
+        }
+        
+        .before-label {
+            top: 0;
+            left: 0;
+        }
+        
+        .after-label {
+            top: 0;
+            right: 0;
+            border-radius: 0 0 0 10px;
+        }
+        
+        .case-content {
+            padding: 30px;
+        }
+        
+        .case-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .profile-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #673ab7, #9c27b0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-age {
+            font-size: 18px;
+            font-weight: bold;
+            color: #673ab7;
+            margin-bottom: 5px;
+        }
+        
+        .profile-concern {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .case-treatment {
+            margin-bottom: 20px;
+        }
+        
+        .treatment-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #673ab7;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .treatment-title::before {
+            content: "✨";
+            font-size: 18px;
+        }
+        
+        .treatment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .treatment-item {
+            font-size: 14px;
+        }
+        
+        .treatment-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .treatment-value {
+            color: #333;
+        }
+        
+        .case-notes {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .notes-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        .notes-content {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        
+        .no-cases {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        .no-cases h2 {
+            color: #999;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .no-cases p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            max-width: 900px;
+            border-radius: 20px;
+            position: relative;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            z-index: 1001;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .close-button:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #f5f5f5;
+            color: #673ab7;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #673ab7;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* 4段構成画像表示用のスタイル */
+        .session-container {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        
+        .session-title {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #673ab7;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .session-info {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #666;
+            font-size: 14px;
+            font-style: italic;
+        }
+        
+        .session-spacer {
+            margin-bottom: 25px;
+        }
+        
+        .image-sections-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .image-tier-section {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tier-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #673ab7;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .image-pair {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .image-item {
+            text-align: center;
+            flex: 1;
+            max-width: 320px;
+        }
+        
+        .image-item img {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .image-item img:hover {
+            transform: scale(1.02);
+        }
+        
+        .image-item .image-label {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        /* タブレット */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 30px 15px;
+            }
+            
+            .cases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 25px;
+            }
+            
+            .intro-section {
+                padding: 35px 30px;
+            }
+            
+            .session-container {
+                padding: 25px;
+            }
+            
+            .image-pair {
+                gap: 20px;
+            }
+            
+            .image-item img {
+                max-width: 250px;
+                height: 250px;
+            }
+        }
+        
+        /* スマホ (横向き) */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 12px;
+            }
+            
+            .header {
+                padding: 25px 0;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .cases-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .intro-section {
+                padding: 30px 20px;
+            }
+            
+            .case-content {
+                padding: 20px;
+            }
+            
+            .treatment-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .session-container {
+                padding: 20px;
+            }
+            
+            .image-pair {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .image-item img {
+                max-width: 200px;
+                height: 200px;
+            }
+            
+            .tier-title {
+                font-size: 16px;
+            }
+            
+            .session-title {
+                font-size: 18px;
+            }
+        }
+        
+        /* スマホ (縦向き) */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 10px;
+            }
+            
+            .header {
+                padding: 20px 0;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header p {
+                font-size: 14px;
+            }
+            
+            .intro-section {
+                padding: 25px 15px;
+            }
+            
+            .intro-section h2 {
+                font-size: 20px;
+            }
+            
+            .intro-section p {
+                font-size: 14px;
+            }
+            
+            .case-images {
+                height: 200px;
+            }
+            
+            .case-content {
+                padding: 15px;
+            }
+            
+            .case-profile {
+                gap: 10px;
+                padding: 12px;
+            }
+            
+            .profile-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            
+            .profile-age {
+                font-size: 16px;
+            }
+            
+            .profile-concern {
+                font-size: 13px;
+            }
+            
+            .case-notes {
+                padding: 15px;
+            }
+            
+            .notes-title {
+                font-size: 13px;
+            }
+            
+            .notes-content {
+                font-size: 13px;
+            }
+            
+            .session-container {
+                padding: 15px;
+                margin-bottom: 30px;
+            }
+            
+            .image-tier-section {
+                padding: 15px;
+            }
+            
+            .image-item img {
+                max-width: 180px;
+                height: 180px;
+            }
+            
+            .tier-title {
+                font-size: 14px;
+            }
+            
+            .session-title {
+                font-size: 16px;
+            }
+        }
+        
+        .auth-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: rgba(255,255,255,0.9);
+            padding: 15px 20px;
+            border-radius: 0 0 0 10px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-header">
+        <div class="user-info" id="userInfo"></div>
+        <button class="logout-btn" onclick="logout()">ログアウト</button>
+    </div>
+    
+    <a href="index.html" class="back-link">← メニューに戻る</a>
+    
+    <header class="header">
+        <h1>florasKIN 施術事例</h1>
+        <p>実際の施術効果をご覧ください</p>
+    </header>
+    
+    <div class="container">
+        <div class="intro-section">
+            <h2>お客様の美しい変化をご紹介</h2>
+            <p>
+                florasKINでの実際の施術効果をご覧いただけます。<br>
+                同じようなお悩みをお持ちの方の参考にしていただければ幸いです。<br>
+                <strong>※掲載許可をいただいたお客様の症例のみを表示しています</strong>
+            </p>
+        </div>
+        
+        <div id="casesGrid" class="cases-grid">
+            <!-- 症例カードがここに動的に挿入されます -->
+        </div>
+        
+        <div id="noCases" class="no-cases" style="display: none;">
+            <h2>現在表示できる症例がございません</h2>
+            <p>掲載許可をいただいた症例が準備でき次第、順次公開いたします。</p>
+        </div>
+    </div>
+    
+    <div id="caseModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="closeModal()">&times;</button>
+            <div id="modalBody">
+                <!-- 詳細内容がここに挿入されます -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allCases = [];
+        
+        function loadCases() {
+            const casesData = localStorage.getItem('floraskinCases');
+            allCases = casesData ? JSON.parse(casesData) : [];
+            
+            
+            // 店舗別フィルタリング
+            const loginInfo = localStorage.getItem('floraskinLogin');
+            if (loginInfo) {
+                const login = JSON.parse(loginInfo);
+                if (login.role !== 'admin') {
+                    // 管理者以外は自分の店舗のみ表示
+                    allCases = allCases.filter(caseData => caseData.store === login.store);
+                }
+            }
+            
+            // 二次利用「全顔OK」「目元モザイクあればOK」「店舗内のみOK」の症例のみをフィルター
+            const publicCases = allCases.filter(caseData => 
+                caseData.secondaryUse === '全顔OK' || 
+                caseData.secondaryUse === '目元モザイクあればOK' || 
+                caseData.secondaryUse === '店舗内のみOK'
+            );
+            displayCases(publicCases);
+        }
+        
+        function displayCases(cases) {
+            const grid = document.getElementById('casesGrid');
+            const noCasesDiv = document.getElementById('noCases');
+            
+            if (cases.length === 0) {
+                grid.style.display = 'none';
+                noCasesDiv.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noCasesDiv.style.display = 'none';
+            
+            grid.innerHTML = cases.map(caseData => `
+                <div class="case-card" onclick="showCaseDetail('${caseData.id}')">
+                    <div class="case-images">
+                        <span class="image-label before-label">Before</span>
+                        <span class="image-label after-label">After</span>
+                        <img src="https://via.placeholder.com/200x250/f0f0f0/999?text=Before" alt="Before">
+                        <img src="https://via.placeholder.com/200x250/e8f5e9/4caf50?text=After" alt="After">
+                    </div>
+                    <div class="case-content">
+                        <div class="case-profile">
+                            <div class="profile-icon">${caseData.ageGroup.charAt(0)}</div>
+                            <div class="profile-info">
+                                <div class="profile-age">${caseData.ageGroup} 女性</div>
+                                <div class="profile-concern">お悩み：${caseData.concern}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="case-treatment">
+                            <div class="treatment-title">施術内容</div>
+                            <div class="treatment-details">
+                                <div class="treatment-item">
+                                    <div class="treatment-label">メニュー</div>
+                                    <div class="treatment-value">${caseData.menu || caseData.course || '未設定'}</div>
+                                </div>
+                                <div class="treatment-item">
+                                    <div class="treatment-label">使用溶剤</div>
+                                    <div class="treatment-value">${caseData.solution || '未設定'}</div>
+                                </div>
+                                <div class="treatment-item">
+                                    <div class="treatment-label">回数</div>
+                                    <div class="treatment-value">${caseData.sessionCount}回</div>
+                                </div>
+                                <div class="treatment-item">
+                                    <div class="treatment-label">頻度</div>
+                                    <div class="treatment-value">${caseData.frequency}</div>
+                                </div>
+                                <div class="treatment-item">
+                                    <div class="treatment-label">期間</div>
+                                    <div class="treatment-value">${caseData.period}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="case-notes">
+                            <div class="notes-title">施術のポイント</div>
+                            <div class="notes-content">${caseData.innovations}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function showCaseDetail(caseId) {
+            const caseData = allCases.find(c => c.id === caseId);
+            if (!caseData || (caseData.secondaryUse !== '全顔OK' && caseData.secondaryUse !== '目元モザイクあればOK' && caseData.secondaryUse !== '店舗内のみOK')) return;
+            
+            const modal = document.getElementById('caseModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div style="padding: 40px;">
+                    <div class="case-profile" style="margin-bottom: 30px;">
+                        <div class="profile-icon" style="width: 60px; height: 60px; font-size: 24px;">${caseData.ageGroup.charAt(0)}</div>
+                        <div class="profile-info">
+                            <div class="profile-age" style="font-size: 24px;">${caseData.ageGroup} 女性</div>
+                            <div class="profile-concern" style="font-size: 16px;">お悩み：${caseData.concern}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #673ab7; margin-bottom: 15px; font-size: 20px;">Before / After</h3>
+                        ${generateImageSections(caseData.images)}
+                    </div>
+                    
+                    <div style="background-color: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 25px;">
+                        <h3 style="color: #673ab7; margin-bottom: 15px; font-size: 18px;">施術詳細</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                            <div><strong>メニュー:</strong> ${caseData.menu || caseData.course || '未設定'}</div>
+                            <div><strong>使用溶剤:</strong> ${caseData.solution || '未設定'}</div>
+                            <div><strong>施術回数:</strong> ${caseData.sessionCount}回</div>
+                            <div><strong>頻度:</strong> ${caseData.frequency}</div>
+                            <div><strong>期間:</strong> ${caseData.period}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px; font-size: 18px;">施術のポイント</h3>
+                        <div style="background: linear-gradient(135deg, #e8f5e9, #f1f8e9); padding: 20px; border-radius: 10px; border-left: 4px solid #4caf50;">
+                            <p style="line-height: 1.6; color: #555;">${caseData.innovations}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px; font-size: 18px;">結果までの経過</h3>
+                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
+                            <p style="line-height: 1.6; color: #555;">${caseData.progress}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('caseModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function generateImageSections(images) {
+            if (!images || images.length === 0) {
+                return `
+                    <div class="image-sections-container">
+                        <div class="image-tier-section">
+                            <h5 class="tier-title">🎯 正面</h5>
+                            <div class="image-pair">
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/f0f0f0/999?text=Before" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">Before</p>
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/e8f5e9/4caf50?text=After" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">After</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return images.map(imageData => `
+                <div class="session-container">
+                    <h4 class="session-title">${imageData.session}回目の結果${imageData.date ? ` (${formatImageDate(imageData.date)})` : ''}</h4>
+                    ${imageData.menu || imageData.solution ? `<p class="session-info">施術: ${imageData.menu || ''}${imageData.solution ? ` (${imageData.solution})` : ''}</p>` : '<div class="session-spacer"></div>'}
+                    
+                    <div class="image-sections-container">
+                        <!-- 正面画像 -->
+                        <div class="image-tier-section">
+                            <h5 class="tier-title">🎯 正面</h5>
+                            <div class="image-pair">
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/f0f0f0/999?text=Before+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">Before</p>
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/e8f5e9/4caf50?text=After+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">After</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 右側画像 -->
+                        ${imageData.rightBefore || imageData.rightAfter ? `
+                        <div class="image-tier-section">
+                            <h5 class="tier-title">📐 右側</h5>
+                            <div class="image-pair">
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/f0f0f0/999?text=Before+Right+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">Before</p>
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/e8f5e9/4caf50?text=After+Right+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">After</p>
+                                </div>
+                            </div>
+                        </div>` : ''}
+                        
+                        <!-- 左側画像 -->
+                        ${imageData.leftBefore || imageData.leftAfter ? `
+                        <div class="image-tier-section">
+                            <h5 class="tier-title">📐 左側</h5>
+                            <div class="image-pair">
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/f0f0f0/999?text=Before+Left+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">Before</p>
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/e8f5e9/4caf50?text=After+Left+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">After</p>
+                                </div>
+                            </div>
+                        </div>` : ''}
+                        
+                        <!-- その他画像 -->
+                        ${imageData.otherBefore || imageData.otherAfter ? `
+                        <div class="image-tier-section">
+                            <h5 class="tier-title">📷 その他</h5>
+                            <div class="image-pair">
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/f0f0f0/999?text=Before+Other+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">Before</p>
+                                </div>
+                                <div class="image-item">
+                                    <img src="https://via.placeholder.com/280x280/e8f5e9/4caf50?text=After+Other+${imageData.session}" 
+                                         style="width: 280px; height: 280px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                    <p class="image-label">After</p>
+                                </div>
+                            </div>
+                        </div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function formatImageDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+        }
+        
+        // ページ読み込み時に症例を表示
+        window.onload = function() {
+            checkAuthentication();
+            loadCases();
+        };
+        
+        function checkAuthentication() {
+            const loginInfo = localStorage.getItem('floraskinLogin');
+            if (!loginInfo) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const login = JSON.parse(loginInfo);
+            document.getElementById('userInfo').textContent = `${login.store} (${login.userId})`;
+        }
+        
+        function logout() {
+            if (confirm('ログアウトしますか？')) {
+                localStorage.removeItem('floraskinLogin');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

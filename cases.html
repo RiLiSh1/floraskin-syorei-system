@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>florasKIN 症例一覧</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: #673ab7;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+        }
+        
+        .add-button {
+            background-color: white;
+            color: #673ab7;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .save-button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        .add-button:hover,
+        .save-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .filters {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .filter-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #673ab7;
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .case-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .case-images {
+            position: relative;
+            height: 200px;
+            display: flex;
+        }
+        
+        .case-images img {
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-label {
+            position: absolute;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .before-label {
+            top: 10px;
+            left: 10px;
+        }
+        
+        .after-label {
+            top: 10px;
+            right: 10px;
+        }
+        
+        .case-content {
+            padding: 20px;
+        }
+        
+        .case-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .tag {
+            background-color: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .tag.store {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .tag.age {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .tag.course {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .tag.secondary-use {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .tag.secondary-use.approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .tag.secondary-use.denied {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .tag.case-type {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        .tag.case-type.normal {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .tag.case-type.adverse-reaction {
+            background-color: #fff8e1;
+            color: #f57c00;
+        }
+        
+        .tag.case-type.complaint {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .case-concern {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .case-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .case-sessions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .no-cases {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .no-cases h2 {
+            color: #999;
+            margin-bottom: 20px;
+        }
+        
+        .no-cases a {
+            color: #673ab7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .no-cases a:hover {
+            text-decoration: underline;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 20px auto;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            z-index: 1001;
+        }
+        
+        .close-button:hover {
+            color: #333;
+        }
+        
+        /* タブレット */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header-content {
+                padding: 0 15px;
+            }
+            
+            .cases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 15px;
+            }
+            
+            .filter-row {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+        
+        /* スマホ (横向き) */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 0 15px;
+            }
+            
+            .header-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+        }
+        
+        /* スマホ (縦向き) */
+        @media (max-width: 480px) {
+            .header {
+                padding: 15px 0;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .add-button, .save-button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .filters {
+                padding: 15px;
+            }
+            
+            .case-images {
+                height: 150px;
+            }
+            
+            .case-content {
+                padding: 15px;
+            }
+            
+            .tag {
+                font-size: 11px;
+                padding: 3px 8px;
+            }
+        }
+        
+        .auth-header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: rgba(255,255,255,0.9);
+            padding: 15px 20px;
+            border-radius: 0 0 0 10px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-header">
+        <div class="user-info" id="userInfo"></div>
+        <button class="logout-btn" onclick="logout()">ログアウト</button>
+    </div>
+    
+    <header class="header">
+        <div class="header-content">
+            <h1>florasKIN 症例報告を見る</h1>
+            <div class="header-buttons">
+                <a href="save.html" class="save-button">症例を保存する</a>
+                <a href="form.html" class="add-button">症例報告をする</a>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="filters">
+            <h2 class="filter-title">フィルター</h2>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="filterStore">店舗</label>
+                    <select id="filterStore" onchange="filterCases()">
+                        <option value="">すべて</option>
+                        <option value="florasKIN 銀座Miel店">florasKIN 銀座Miel店</option>
+                        <option value="florasKIN 銀座Blanc店">florasKIN 銀座Blanc店</option>
+                        <option value="florasKIN 上野店">florasKIN 上野店</option>
+                        <option value="florasKIN 恵比寿店">florasKIN 恵比寿店</option>
+                        <option value="florasKIN 心斎橋店">florasKIN 心斎橋店</option>
+                        <option value="florasKIN 難波店">florasKIN 難波店</option>
+                        <option value="florasKIN 梅田店">florasKIN 梅田店</option>
+                        <option value="florasKIN 三宮店">florasKIN 三宮店</option>
+                        <option value="florasKIN 横浜店">florasKIN 横浜店</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterAge">年齢層</label>
+                    <select id="filterAge" onchange="filterCases()">
+                        <option value="">すべて</option>
+                        <option value="10代">10代</option>
+                        <option value="20代">20代</option>
+                        <option value="30代">30代</option>
+                        <option value="40代">40代</option>
+                        <option value="50代">50代</option>
+                        <option value="60代以上">60代以上</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterMenu">メニュー</label>
+                    <select id="filterMenu" onchange="filterCases()">
+                        <option value="">すべて</option>
+                        <option value="フローラ毛穴洗浄">フローラ毛穴洗浄</option>
+                        <option value="フローラ肌質改善">フローラ肌質改善</option>
+                        <option value="フローラワックス">フローラワックス</option>
+                        <option value="その他">その他</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterStaff">担当者</label>
+                    <select id="filterStaff" onchange="filterCases()">
+                        <option value="">すべて</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterSecondaryUse">二次利用</label>
+                    <select id="filterSecondaryUse" onchange="filterCases()">
+                        <option value="">すべて</option>
+                        <option value="全顔OK">全顔OK</option>
+                        <option value="目元モザイクあればOK">目元モザイクあればOK</option>
+                        <option value="店舗内のみOK">店舗内のみOK</option>
+                        <option value="掲載NG">掲載NG</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterCaseType">症例区分</label>
+                    <select id="filterCaseType" onchange="filterCases()">
+                        <option value="">すべて</option>
+                        <option value="normal">通常症例</option>
+                        <option value="adverseReaction">好転反応</option>
+                        <option value="complaint">クレーム</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterConcern">悩み検索</label>
+                    <input type="text" id="filterConcern" placeholder="キーワードを入力" onkeyup="filterCases()">
+                </div>
+            </div>
+        </div>
+        
+        <div id="casesGrid" class="cases-grid">
+            <!-- 症例カードがここに動的に挿入されます -->
+        </div>
+        
+        <div id="noCases" class="no-cases" style="display: none;">
+            <h2>まだ症例が投稿されていません</h2>
+            <p><a href="form.html">最初の症例を投稿する</a></p>
+        </div>
+    </div>
+    
+    <div id="caseModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-button" onclick="closeModal()">&times;</button>
+            <div id="modalBody">
+                <!-- 詳細内容がここに挿入されます -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allCases = [];
+        
+        function loadCases() {
+            const casesData = localStorage.getItem('floraskinCases');
+            allCases = casesData ? JSON.parse(casesData) : [];
+            
+            
+            // 店舗別フィルタリング
+            const loginInfo = localStorage.getItem('floraskinLogin');
+            if (loginInfo) {
+                const login = JSON.parse(loginInfo);
+                if (login.role !== 'admin') {
+                    // 管理者以外は自分の店舗のみ表示
+                    allCases = allCases.filter(caseData => caseData.store === login.store);
+                }
+            }
+            
+            // Extract unique staff names and populate dropdown
+            populateStaffDropdown();
+            
+            displayCases(allCases);
+        }
+        
+        function populateStaffDropdown() {
+            // Extract unique staff names from all cases
+            const staffNames = [...new Set(allCases.map(caseData => caseData.staffName))];
+            
+            // Sort staff names alphabetically
+            staffNames.sort();
+            
+            // Get the filterStaff dropdown element
+            const filterStaffSelect = document.getElementById('filterStaff');
+            
+            // Clear existing options except the first one ("すべて")
+            filterStaffSelect.innerHTML = '<option value="">すべて</option>';
+            
+            // Add each unique staff name as an option
+            staffNames.forEach(staffName => {
+                const option = document.createElement('option');
+                option.value = staffName;
+                option.textContent = staffName;
+                filterStaffSelect.appendChild(option);
+            });
+        }
+        
+        function displayCases(cases) {
+            const grid = document.getElementById('casesGrid');
+            const noCasesDiv = document.getElementById('noCases');
+            
+            if (cases.length === 0) {
+                grid.style.display = 'none';
+                noCasesDiv.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noCasesDiv.style.display = 'none';
+            
+            grid.innerHTML = cases.map(caseData => `
+                <div class="case-card" onclick="showCaseDetail('${caseData.id}')">
+                    <div class="case-images">
+                        <span class="image-label before-label">Before</span>
+                        <span class="image-label after-label">After</span>
+                        <img src="https://via.placeholder.com/200x200/f0f0f0/999?text=Before" alt="Before">
+                        <img src="https://via.placeholder.com/200x200/e8f5e9/4caf50?text=After" alt="After">
+                    </div>
+                    <div class="case-content">
+                        <div class="case-tags">
+                            <span class="tag store">${caseData.store}</span>
+                            <span class="tag age">${caseData.ageGroup}</span>
+                            <span class="tag course">${caseData.menu || caseData.course || '未設定'}</span>
+                            ${caseData.type === 'saved' ? '<span class="tag" style="background-color: #4caf50; color: white;">保存</span>' : '<span class="tag" style="background-color: #673ab7; color: white;">報告</span>'}
+                            <span class="tag secondary-use ${getSecondaryUseClass(caseData.secondaryUse)}">${caseData.secondaryUse}</span>
+                            ${getCaseTypeTag(caseData)}
+                        </div>
+                        <div class="case-concern">${caseData.concern}</div>
+                        <div class="case-meta">
+                            <div class="case-sessions">
+                                <span>施術${caseData.sessionCount}回</span>
+                                <span>・</span>
+                                <span>${caseData.period}</span>
+                                <span>・</span>
+                                <span>担当: ${caseData.staffName}</span>
+                            </div>
+                            <div class="case-date">${formatDate(caseData.timestamp)}</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function filterCases() {
+            const storeFilter = document.getElementById('filterStore').value;
+            const ageFilter = document.getElementById('filterAge').value;
+            const menuFilter = document.getElementById('filterMenu').value;
+            const staffFilter = document.getElementById('filterStaff').value;
+            const secondaryUseFilter = document.getElementById('filterSecondaryUse').value;
+            const caseTypeFilter = document.getElementById('filterCaseType').value;
+            const concernFilter = document.getElementById('filterConcern').value.toLowerCase();
+            
+            const filteredCases = allCases.filter(caseData => {
+                const matchStore = !storeFilter || caseData.store === storeFilter;
+                const matchAge = !ageFilter || caseData.ageGroup === ageFilter;
+                const matchMenu = !menuFilter || caseData.menu === menuFilter || caseData.course === menuFilter;
+                const matchStaff = !staffFilter || caseData.staffName === staffFilter;
+                const matchSecondaryUse = !secondaryUseFilter || caseData.secondaryUse === secondaryUseFilter;
+                const matchConcern = !concernFilter || caseData.concern.toLowerCase().includes(concernFilter);
+                
+                // 症例区分のフィルター処理
+                let matchCaseType = true;
+                if (caseTypeFilter) {
+                    if (caseTypeFilter === 'normal') {
+                        matchCaseType = caseData.normalCase === true || (!caseData.adverseReaction && !caseData.complaint);
+                    } else if (caseTypeFilter === 'adverseReaction') {
+                        matchCaseType = caseData.adverseReaction === true;
+                    } else if (caseTypeFilter === 'complaint') {
+                        matchCaseType = caseData.complaint === true;
+                    }
+                }
+                
+                return matchStore && matchAge && matchMenu && matchStaff && matchSecondaryUse && matchConcern && matchCaseType;
+            });
+            
+            displayCases(filteredCases);
+        }
+        
+        function showCaseDetail(caseId) {
+            const caseData = allCases.find(c => c.id === caseId);
+            if (!caseData) return;
+            
+            const modal = document.getElementById('caseModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div style="padding: 40px;">
+                    <div style="margin-bottom: 30px;">
+                        <div class="case-tags" style="margin-bottom: 15px;">
+                            <span class="tag store">${caseData.store}</span>
+                            <span class="tag age">${caseData.ageGroup}</span>
+                            <span class="tag course">${caseData.course}</span>
+                        </div>
+                        <h2 style="font-size: 24px; margin-bottom: 10px; color: #333;">${caseData.concern}</h2>
+                        <p style="color: #999; font-size: 14px;">投稿日: ${formatDate(caseData.timestamp)}</p>
+                    </div>
+                    
+                    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+                        <h3 style="color: #673ab7; margin-bottom: 15px;">基本情報</h3>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                            <div>
+                                <strong>顧客番号:</strong> ${caseData.customerNumber}
+                            </div>
+                            <div>
+                                <strong>担当者:</strong> ${caseData.staffName}
+                            </div>
+                            <div>
+                                <strong>施術回数:</strong> ${caseData.sessionCount}回
+                            </div>
+                            <div>
+                                <strong>頻度:</strong> ${caseData.frequency}
+                            </div>
+                            <div>
+                                <strong>期間:</strong> ${caseData.period}
+                            </div>
+                            <div>
+                                <strong>メニュー:</strong> ${caseData.menu || caseData.course || '未設定'}
+                            </div>
+                            <div>
+                                <strong>使用溶剤:</strong> ${caseData.solution || '未設定'}
+                            </div>
+                            <div>
+                                <strong>二次利用:</strong> ${caseData.secondaryUse}
+                            </div>
+                            ${caseData.secondaryUseNote ? `<div style="grid-column: 1 / -1;"><strong>特記事項:</strong> ${caseData.secondaryUseNote}</div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #673ab7; margin-bottom: 15px;">Before / After</h3>
+                        ${generateImageSections(caseData.images)}
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">来店きっかけ</h3>
+                        <p style="line-height: 1.8;">${caseData.visitReason}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">施術において注意や意識したこと</h3>
+                        <p style="line-height: 1.8;">${caseData.treatmentNotes}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">お客様の生活習慣・自宅ケア</h3>
+                        <p style="line-height: 1.8;">${caseData.lifestyle}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">結果が出るまでの経過</h3>
+                        <p style="line-height: 1.8;">${caseData.progress}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">総括して工夫した点</h3>
+                        <p style="line-height: 1.8;">${caseData.innovations}</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <h3 style="color: #673ab7; margin-bottom: 10px;">今後のケア提案</h3>
+                        <p style="line-height: 1.8;">${caseData.futureCare}</p>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('caseModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        function getSecondaryUseClass(secondaryUse) {
+            switch(secondaryUse) {
+                case '全顔OK': return 'approved';
+                case '目元モザイクあればOK': return '';
+                case '店舗内のみOK': return '';
+                case '掲載NG': return 'denied';
+                default: return '';
+            }
+        }
+        
+        function getCaseTypeTag(caseData) {
+            let tags = [];
+            
+            if (caseData.normalCase === true || (!caseData.adverseReaction && !caseData.complaint)) {
+                tags.push('<span class="tag case-type normal">通常症例</span>');
+            }
+            if (caseData.adverseReaction) {
+                tags.push('<span class="tag case-type adverse-reaction">好転反応</span>');
+            }
+            if (caseData.complaint) {
+                tags.push('<span class="tag case-type complaint">クレーム</span>');
+            }
+            
+            return tags.join('');
+        }
+        
+        function generateImageSections(images) {
+            if (!images || images.length === 0) {
+                return `
+                    <div style="display: flex; gap: 20px; justify-content: center;">
+                        <div style="text-align: center;">
+                            <img src="https://via.placeholder.com/300x300/f0f0f0/999?text=Before" 
+                                 style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px;">
+                            <p style="margin-top: 10px; font-weight: bold;">Before</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="https://via.placeholder.com/300x300/e8f5e9/4caf50?text=After" 
+                                 style="width: 300px; height: 300px; object-fit: cover; border-radius: 10px;">
+                            <p style="margin-top: 10px; font-weight: bold;">After</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return images.map(imageData => `
+                <div style="margin-bottom: 30px; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                    <h4 style="text-align: center; margin-bottom: 10px; color: #673ab7;">${imageData.session}回目${imageData.date ? ` (${formatImageDate(imageData.date)})` : ''}</h4>
+                    ${imageData.menu || imageData.solution ? `<p style="text-align: center; margin-bottom: 15px; color: #666; font-size: 14px;">施術: ${imageData.menu || ''}${imageData.solution ? ` (${imageData.solution})` : ''}</p>` : ''}
+                    <div style="display: flex; gap: 20px; justify-content: center;">
+                        <div style="text-align: center;">
+                            <img src="https://via.placeholder.com/250x250/f0f0f0/999?text=Before+${imageData.session}" 
+                                 style="width: 250px; height: 250px; object-fit: cover; border-radius: 10px;">
+                            <p style="margin-top: 10px; font-weight: bold;">Before</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <img src="https://via.placeholder.com/250x250/e8f5e9/4caf50?text=After+${imageData.session}" 
+                                 style="width: 250px; height: 250px; object-fit: cover; border-radius: 10px;">
+                            <p style="margin-top: 10px; font-weight: bold;">After</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+        }
+        
+        function formatImageDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}/${month}/${day}`;
+        }
+        
+        // ページ読み込み時に症例を表示
+        window.onload = function() {
+            checkAuthentication();
+            loadCases();
+        };
+        
+        function checkAuthentication() {
+            const loginInfo = localStorage.getItem('floraskinLogin');
+            if (!loginInfo) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const login = JSON.parse(loginInfo);
+            document.getElementById('userInfo').textContent = `${login.store} (${login.userId})`;
+        }
+        
+        function logout() {
+            if (confirm('ログアウトしますか？')) {
+                localStorage.removeItem('floraskinLogin');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
